@@ -15,7 +15,6 @@ semantic-version==2.5.0
 simplejson==3.10.0
 six==1.10.0
 texttable==0.8.7
-unity-lens-photos==1.0
 wcwidth==0.1.7
 websocket-client==0.37.0
 wit==4.2.0
