@@ -71,7 +71,7 @@ def send_message(recipient_id, message_text, quick_replies=None):
             "id": recipient_id
         },
         "message": {
-            "text": message_text
+            "text": message_text,
             "quick_replies": quick_replies
         }
     })
