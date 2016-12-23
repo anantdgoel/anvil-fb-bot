@@ -11,21 +11,6 @@ access_token = os.environ['WIT_ACCESS_TOKEN']
 sessions = {}
 contexts = {}
 
-def add_appointment():
-    print("Test action")
-
-def send(request, response):
-    send_message(sender_id, response['text'])
-
-
-actions = {
-'send' : send,
- 'add_appointment' : add_appointment,
-}
-
-client = Wit(access_token=access_token, actions=actions)
-
-
 @app.route('/', methods=['GET'])
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
@@ -111,8 +96,19 @@ def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)
     sys.stdout.flush()
 
+def add_appointment():
+    print("Test action")
+
+def send(request, response):
+    send_message(request['session_id'], response['text'])
 
 
+actions = {
+'send' : send,
+ 'add_appointment' : add_appointment,
+}
+
+client = Wit(access_token=access_token, actions=actions)
 
 if __name__ == '__main__':
     app.run(debug=True)
