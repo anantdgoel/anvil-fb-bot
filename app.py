@@ -72,6 +72,7 @@ def send_message(recipient_id, message_text, quick_replies=None):
         },
         "message": {
             "text": message_text
+            "quick_replies": quick_replies
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
@@ -88,8 +89,7 @@ def add_appointment():
     print("Test action")
 
 def send(request, response):
-    log(str(response))
-    send_message(request['session_id'], response['text'])
+    send_message(request['session_id'], response['text'], response['quickreplies'])
 
 
 actions = {
