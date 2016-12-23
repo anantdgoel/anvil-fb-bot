@@ -14,6 +14,7 @@ def add_appointment():
 
 def send(request, response):
     print(str(response))
+    print(str(request))
 
 actions = {
 'send' : send,
