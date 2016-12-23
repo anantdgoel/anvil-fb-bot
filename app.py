@@ -10,13 +10,12 @@ app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 sessions = {}
 contexts = {}
-uid = '';
 
 def add_appointment():
     print("Test action")
 
 def send(request, response):
-    send_message(uid, response['text'])
+    send_message(sender_id, response['text'])
 
 
 actions = {
