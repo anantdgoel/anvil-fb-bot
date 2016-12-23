@@ -26,3 +26,4 @@ texttable==0.8.7
 wcwidth==0.1.7
 websocket-client==0.37.0
 wit==4.2.0
+pyOpenSSL==16.2.0

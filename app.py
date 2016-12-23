@@ -1,7 +1,7 @@
 import os
 import sys
 import json
-
+import uuid, OpenSSL
 import requests
 from flask import Flask, request
 from wit import Wit
@@ -11,6 +11,7 @@ access_token = os.environ['WIT_ACCESS_TOKEN']
 actions = {}
 
 client = Wit(access_token=access_token, actions=actions)
+sessions = {}
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -42,6 +43,12 @@ def webhook():
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
+                    if(sender_id not in sessions)
+                        sessions[sender_id] = uuid.UUID(bytes = OpenSSL.rand.bytes(16))
+
+                    session_id = sessions[sender_id]                    # session id for user
+
+
                     response = client.message(message_text)
                     send_message(sender_id, str(response))
 

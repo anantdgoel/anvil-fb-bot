@@ -36,7 +36,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/anant/Development/anvil/fb_bot/anvil-fb"
+set -gx VIRTUAL_ENV "/home/anant/Development/anvil-fb-bot/anvil-fb"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

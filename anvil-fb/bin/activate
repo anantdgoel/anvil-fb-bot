@@ -40,7 +40,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/anant/Development/anvil/fb_bot/anvil-fb"
+VIRTUAL_ENV="/home/anant/Development/anvil-fb-bot/anvil-fb"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
