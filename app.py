@@ -12,7 +12,11 @@ access_token = os.environ['WIT_ACCESS_TOKEN']
 def add_appointment():
     print("Test action")
 
+def send(request, response):
+    send_message(response['text'])
+
 actions = {
+'send' : send,
  'add_appointment' : add_appointment,
 }
 
