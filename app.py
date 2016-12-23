@@ -9,11 +9,10 @@ from wit import Wit
 app = Flask(__name__)
 access_token = os.environ.get('WIT_ACCESS_TOKEN')
 actions = {
-    'send' : send_message,
-    'add_appointment' : add_appointment,
+    'send' : send message,
 }
-client = Wit(access_token=access_token, actions=actions)
 
+client = Wit(access_token=access_token, actions=actions)
 
 @app.route('/', methods=['GET'])
 def verify():
