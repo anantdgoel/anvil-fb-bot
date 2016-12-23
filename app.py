@@ -8,13 +8,16 @@ from wit import Wit
 
 app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
+sessions = {}
+contexts = {}
+uid = '';
 
 def add_appointment():
     print("Test action")
 
 def send(request, response):
-    print(str(response))
-    print(str(request))
+    send_message(uid, response['text'])
+
 
 actions = {
 'send' : send,
@@ -22,8 +25,7 @@ actions = {
 }
 
 client = Wit(access_token=access_token, actions=actions)
-sessions = {}
-contexts = {}
+
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -56,7 +58,7 @@ def webhook():
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     if(sender_id not in sessions):
-                        sessions[sender_id] = uuid.UUID(bytes = OpenSSL.rand.bytes(16))
+                        sessions[sender_id] = str(uuid.UUID(bytes = OpenSSL.rand.bytes(16)))
 
                     session_id = sessions[sender_id]                    # session id for user
 
@@ -64,7 +66,7 @@ def webhook():
                         contexts[session_id] = {}
 
                     curr_context = contexts[session_id]
-
+                    uid = sender_id
                     response = client.run_actions(session_id, message_text, curr_context)
                     contexts[session_id] = str(response)
                     curr_context = str(response)
