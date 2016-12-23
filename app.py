@@ -54,7 +54,7 @@ def webhook():
 
                     curr_context = contexts[session_id]
 
-                    response = client.run_actions(session_id, message_text, context)
+                    response = client.run_actions(session_id, message_text, curr_context)
                     contexts[session_id] = str(response)
                     curr_context = str(response)
                     send_message(sender_id, str(response))
