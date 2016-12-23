@@ -12,6 +12,7 @@ actions = {}
 
 client = Wit(access_token=access_token, actions=actions)
 sessions = {}
+contexts = {}
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -48,8 +49,14 @@ def webhook():
 
                     session_id = sessions[sender_id]                    # session id for user
 
+                    if(session_id not in contexts):
+                        contexts[session_id] = {}
 
-                    response = client.message(message_text)
+                    curr_context = contexts[session_id]
+
+                    response = client.run_actions(session_id, message_text, context)
+                    contexts[session_id] = str(response)
+                    curr_context = str(response)
                     send_message(sender_id, str(response))
 
                 if messaging_event.get("delivery"):  # delivery confirmation
