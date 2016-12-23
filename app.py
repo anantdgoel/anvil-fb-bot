@@ -13,7 +13,7 @@ def add_appointment():
     print("Test action")
 
 def send(request, response):
-    send_message(response['text'])
+    print(response['text'])
 
 actions = {
 'send' : send,
