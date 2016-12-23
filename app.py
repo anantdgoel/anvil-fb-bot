@@ -8,7 +8,9 @@ from wit import Wit
 
 app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
-actions = {}
+actions = {
+ 'add_appointment' : add_appointment
+}
 
 client = Wit(access_token=access_token, actions=actions)
 sessions = {}
@@ -98,6 +100,9 @@ def send_message(recipient_id, message_text):
 def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)
     sys.stdout.flush()
+
+def add_appointment:
+    print("Test action")
 
 
 if __name__ == '__main__':
