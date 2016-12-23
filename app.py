@@ -56,7 +56,7 @@ def webhook():
     return "ok", 200
 
 
-def send_message(recipient_id, message_text, quick_replies=None):
+def send_message(recipient_id, message_text:
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
 
@@ -72,7 +72,7 @@ def send_message(recipient_id, message_text, quick_replies=None):
         },
         "message": {
             "text": message_text,
-            "quick_replies": quick_replies
+            "quick_replies": ["Yes", "No"]
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
@@ -89,7 +89,7 @@ def add_appointment():
     print("Test action")
 
 def send(request, response):
-    send_message(request['session_id'], response['text'], response['quickreplies'])
+    send_message(request['session_id'], response['text'])
 
 
 actions = {
