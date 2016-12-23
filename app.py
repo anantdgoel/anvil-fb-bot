@@ -10,7 +10,7 @@ app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 sessions = {}
 contexts = {}
-sender_id = '';
+send_id = '';
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -39,7 +39,8 @@ def webhook():
 
                 if messaging_event.get("message"):  # someone sent us a message
 
-                    global sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
+                    sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
+                    send_id = sender_id
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
                     if(sender_id not in sessions):
@@ -101,7 +102,7 @@ def add_appointment():
     print("Test action")
 
 def send(request, response):
-    send_message(sender_id, response['text'])
+    send_message(send_id, response['text'])
 
 
 actions = {
