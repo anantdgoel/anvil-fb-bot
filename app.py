@@ -9,7 +9,7 @@ from wit import Wit
 app = Flask(__name__)
 access_token = os.environ.get('WIT_ACCESS_TOKEN')
 actions = {
-    'send' : send message
+    'send_message' : send_message
 }
 
 client = Wit(access_token=access_token, actions=actions)
