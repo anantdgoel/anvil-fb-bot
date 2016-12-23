@@ -71,8 +71,7 @@ def send_message(recipient_id, message_text):
             "id": recipient_id
         },
         "message": {
-            "text": message_text,
-            "quick_replies": ["Yes", "No"]
+            "text": message_text
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
