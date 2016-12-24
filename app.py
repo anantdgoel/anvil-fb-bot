@@ -38,7 +38,6 @@ def webhook():
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
-		    print 'Username: ' + str(messaging_event['sender'])
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
@@ -127,6 +126,9 @@ def parse_datetime(datetime):
     date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) 
     return date
 
+def get_events():
+    print "Testing get_events()"
+
 def send(request, response):
     send_message(request['session_id'], response['text'])
 
@@ -134,6 +136,7 @@ def send(request, response):
 actions = {
 'send' : send,
  'add_appointment' : add_appointment,
+ 'show_events' : get_events,
 }
 
 client = Wit(access_token=access_token, actions=actions)
