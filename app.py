@@ -110,7 +110,7 @@ def first_entity_value(entities, entity):
 def add_appointment(request):
     context = request['context']
     entities = request['entities']
-    username = request['session_id']['sender']
+    username = request['sender']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
         context['date'] = str(parse_datetime(datetime)) + username
