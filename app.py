@@ -112,7 +112,7 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        context['date'] = str(datetime[:datetime.index('T'))
+        context['date'] = str(datetime[:datetime.index('T')])
         if context.get('missingDatetime') is not None:
             del context['missingDatetime']
     else:
