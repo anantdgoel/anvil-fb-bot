@@ -9,6 +9,7 @@ from wit import Wit
 app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
+username = ''
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -38,6 +39,7 @@ def webhook():
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
+		    username = messaging_event["sender"]
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
@@ -113,17 +115,17 @@ def add_appointment(request):
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
         context['date'] = str(parse_datetime(datetime))
-        if context.get('missingDatetime') is not None:
-            del context['missingDatetime']
+        if context.get('missing_date') is not None:
+            del context['missing_date']
     else:
-        context['missingDatetime'] = True
+        context['missing_date'] = True
         if context.get('date') is not None:
-            del context['forecast']
+            del context['date']
     return context
 
 def parse_datetime(datetime):
     date_array = datetime[0:datetime.index('T')].split('-')
-    date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) 
+    date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) + username 
     return date
 
 def send(request, response):
