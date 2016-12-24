@@ -96,8 +96,31 @@ def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)
     sys.stdout.flush()
 
-def add_appointment():
-    print("Test action")
+def first_entity_value(entities, entity):
+    """
+    Returns first entity value
+    """
+    if entity not in entities:
+        return None
+    val = entities[entity][0]['value']
+    if not val:
+        return None
+    return val['value'] if isinstance(val, dict) else val
+
+
+def add_appointment(request):
+    context = request['context']
+    entities = request['entities']
+    datetime = first_entity_value(entities, 'datetime')
+    if datetime:
+        context['date'] = 'success'
+        if context.get('missingDatetime') is not None:
+            del context['missingDatetime']
+    else:
+        context['missingDatetime'] = True
+        if context.get('date') is not None:
+            del context['forecast']
+    return context
 
 def send(request, response):
     send_message(request['session_id'], response['text'])
