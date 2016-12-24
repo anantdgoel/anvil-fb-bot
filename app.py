@@ -9,7 +9,6 @@ from wit import Wit
 app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
-username = ''
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -39,7 +38,6 @@ def webhook():
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
-		    username = messaging_event["sender"]
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
@@ -112,9 +110,10 @@ def first_entity_value(entities, entity):
 def add_appointment(request):
     context = request['context']
     entities = request['entities']
+    username = request['session_id']['sender']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        context['date'] = str(parse_datetime(datetime))
+        context['date'] = str(parse_datetime(datetime)) + username
         if context.get('missing_date') is not None:
             del context['missing_date']
     else:
@@ -125,7 +124,7 @@ def add_appointment(request):
 
 def parse_datetime(datetime):
     date_array = datetime[0:datetime.index('T')].split('-')
-    date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) + username 
+    date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) 
     return date
 
 def send(request, response):
