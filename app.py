@@ -123,7 +123,7 @@ def add_appointment(request):
 
 def parse_datetime(datetime):
     date_array = datetime[0:datetime.index('T')].split('-')
-    date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[3]) 
+    date = str(date_array[0]) + '/' + str(date_array[1]) + '/' + str(date_array[2]) 
     return date
 
 def send(request, response):
