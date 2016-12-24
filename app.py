@@ -38,6 +38,7 @@ def webhook():
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
+		    print 'Username: ' + messaging_event['sender']
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
@@ -110,10 +111,9 @@ def first_entity_value(entities, entity):
 def add_appointment(request):
     context = request['context']
     entities = request['entities']
-    username = request['session_id'][0]
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        context['date'] = str(parse_datetime(datetime)) + username
+        context['date'] = str(parse_datetime(datetime))
         if context.get('missing_date') is not None:
             del context['missing_date']
     else:
