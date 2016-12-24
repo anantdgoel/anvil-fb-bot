@@ -107,13 +107,12 @@ def first_entity_value(entities, entity):
         return None
     return val['value'] if isinstance(val, dict) else val
 
-
 def add_appointment(request):
     context = request['context']
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        context['date'] = 'success'
+        context['date'] = datetime
         if context.get('missingDatetime') is not None:
             del context['missingDatetime']
     else:
