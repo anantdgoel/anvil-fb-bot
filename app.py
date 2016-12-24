@@ -112,7 +112,7 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        context['date'] = datetime
+        context['date'] = parse_datetime(datetime)
         if context.get('missingDatetime') is not None:
             del context['missingDatetime']
     else:
@@ -120,6 +120,11 @@ def add_appointment(request):
         if context.get('date') is not None:
             del context['forecast']
     return context
+
+def parse_datetime(datetime):
+    date_array = datetime[0:datetime.index('T')].split('-')
+    date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[3]) 
+    return date
 
 def send(request, response):
     send_message(request['session_id'], response['text'])
