@@ -96,8 +96,38 @@ def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)
     sys.stdout.flush()
 
-def add_appointment():
-    print("Test action")
+def first_entity_value(entities, entity):
+    """
+    Returns first entity value
+    """
+    if entity not in entities:
+        return None
+    val = entities[entity][0]['value']
+    if not val:
+        return None
+    return val['value'] if isinstance(val, dict) else val
+
+def add_appointment(request):
+    context = request['context']
+    entities = request['entities']
+    datetime = first_entity_value(entities, 'datetime')
+    if datetime:
+        context['date'] = str(parse_datetime(datetime))
+        if context.get('missing_date') is not None:
+            del context['missing_date']
+    else:
+        context['missing_date'] = True
+        if context.get('date') is not None:
+            del context['date']
+    return context
+
+def parse_datetime(datetime):
+    date_array = datetime[0:datetime.index('T')].split('-')
+    date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) 
+    return date
+
+def get_events():
+    print "Testing get_events()"
 
 def send(request, response):
     send_message(request['session_id'], response['text'])
@@ -106,6 +136,7 @@ def send(request, response):
 actions = {
 'send' : send,
  'add_appointment' : add_appointment,
+ 'show_events' : get_events,
 }
 
 client = Wit(access_token=access_token, actions=actions)
