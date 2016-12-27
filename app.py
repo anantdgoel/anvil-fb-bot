@@ -141,8 +141,9 @@ def get_events(request):
             event_description = event['description']
             event_id = event['id']
             message = message + 'Name: ' + event_name +  '\nDescription: ' + event_description + '\nLink: ' + 'https://www.facebook.com/events/' + event_id
-            message = message + "\n--------------------"
+            message = message + "\n\n"
         
+        message = message[:len(message) - 2]
         context['event'] = message       
     else:
         context['event'] = 'Sorry there are no upcoming events!'
