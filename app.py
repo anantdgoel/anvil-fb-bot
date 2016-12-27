@@ -9,6 +9,7 @@ from wit import Wit
 app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
+sender_id = None
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -36,9 +37,8 @@ def webhook():
             for messaging_event in entry["messaging"]:
 
                 if messaging_event.get("message"):  # someone sent us a message
-
+                    global sender_id
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
-                    print sender_id
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
@@ -145,6 +145,7 @@ def get_events(request):
             message = message + "\n\n"
         
         message = message[:len(message) - 2]
+        message = message + '\nSender id: ' + sender_id
         context['event'] = message       
     else:
         context['event'] = 'Sorry there are no upcoming events!'
