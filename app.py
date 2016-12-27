@@ -126,7 +126,7 @@ def parse_datetime(datetime):
     date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) 
     return date
 
-def get_events():
+def get_events(request):
     context = request['context']
     page_access_token = os.environ['PAGE_ACCESS_TOKEN']
 
