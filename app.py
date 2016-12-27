@@ -127,7 +127,22 @@ def parse_datetime(datetime):
     return date
 
 def get_events():
-    print "Testing get_events()"
+    context = request['context']
+    page_access_token = os.environ['PAGE_ACCESS_TOKEN']
+
+    result = requests.get('https://graph.facebook.com/dummyanvilpage/events?access_token=' + page_access_token).json()
+
+    data = result['data']
+
+    if data:
+        for event in data:
+            event_name = event['name']
+            event_description = event['description']
+            event_id = event['id']
+     else:
+        context['event'] = 'Sorry there are no upcoming events!'
+    
+    return context
 
 def send(request, response):
     send_message(request['session_id'], response['text'])
