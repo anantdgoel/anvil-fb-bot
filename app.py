@@ -38,6 +38,7 @@ def webhook():
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
+                    print sender_id
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
@@ -72,18 +73,18 @@ def send_message(recipient_id, message_text):
         },
         "message": {
             "text": message_text,
-#            "quick_replies":[
- #                               {
-  #                               "content_type":"text",
-   #                               "title":"Yes",
-    #                              "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
-     #                             },
-      #                           {
-       #                            "content_type":"text",
-        #                           "title":"No",
-         #                          "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
-          #                          }
-           #                 ]
+            "quick_replies":[
+                                {
+                                 "content_type":"text",
+                                  "title":"Yes",
+                                  "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+                                  },
+                                 {
+                                   "content_type":"text",
+                                   "title":"No",
+                                   "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+                                    }
+                            ]
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
