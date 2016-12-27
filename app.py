@@ -113,7 +113,7 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        context['date'] = str(parse_datetime(datetime)) + str(get_user_info())
+        context['date'] = str(parse_datetime(datetime)) + ' ' + str(get_user_info())
         if context.get('missing_date') is not None:
             del context['missing_date']
     else:
@@ -152,14 +152,14 @@ def get_events(request):
     return context
 
 def get_user_info():
-    result = requests.get('https://graph.facebook.com/v2.8/' + sender_id + '?fields=first_name,last_name&access_token=' + access_token).json()
-    print result
-    #first_name = result['first_name']
-    #last_name = result['last_name']
-    #return first_name + ' ' + last_name
+    page_access_token = os.environ['PAGE_ACCESS_TOKEN']
+    result = requests.get('https://graph.facebook.com/v2.8/' + sender_id + '?fields=first_name,last_name&access_token=' + page_access_token).json()
+    first_name = result['first_name']
+    last_name = result['last_name']
+    return first_name + ' ' + last_name
 
 def send(request, response):
-    send_message(request['session_id'], response['text'])
+    send_message(request['sender_id'], response['text'])
 
 
 actions = {
