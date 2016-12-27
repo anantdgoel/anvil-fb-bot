@@ -159,7 +159,7 @@ def get_user_info():
     return first_name + ' ' + last_name
 
 def send(request, response):
-    send_message(request['sender_id'], response['text'])
+    send_message(request['session_id'], response['text'])
 
 
 actions = {
