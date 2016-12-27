@@ -113,7 +113,7 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        context['date'] = str(parse_datetime(datetime))
+        context['date'] = str(parse_datetime(datetime)) + get_user_info()
         if context.get('missing_date') is not None:
             del context['missing_date']
     else:
@@ -131,7 +131,7 @@ def get_events(request):
     context = request['context']
     page_access_token = os.environ['PAGE_ACCESS_TOKEN']
 
-    result = requests.get('https://graph.facebook.com/dummyanvilpage/events?access_token=' + page_access_token).json()
+    result = requests.get('https://graph.facebook.com/v2.8/dummyanvilpage/events?access_token=' + page_access_token).json()
 
     data = result['data']
 
@@ -145,12 +145,17 @@ def get_events(request):
             message = message + "\n\n"
         
         message = message[:len(message) - 2]
-        message = message + '\nSender id: ' + sender_id
         context['event'] = message       
     else:
         context['event'] = 'Sorry there are no upcoming events!'
     
     return context
+
+def get_user_info():
+    result = requests.get('https://graph.facebook.com/v2.8/' + sender_id + '?fields=first_name,last_name&access_token=' + access_token).json()
+    first_name = result['first_name']
+    last_name = result['last_name']
+    return first_name + ' ' + last_name
 
 def send(request, response):
     send_message(request['session_id'], response['text'])
