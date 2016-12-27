@@ -139,8 +139,8 @@ def get_events():
             event_name = event['name']
             event_description = event['description']
             event_id = event['id']
-     else:
-         context['event'] = 'Sorry there are no upcoming events!'
+    else:
+        context['event'] = 'Sorry there are no upcoming events!'
     
     return context
 
