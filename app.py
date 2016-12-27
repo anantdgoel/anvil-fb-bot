@@ -135,10 +135,15 @@ def get_events(request):
     data = result['data']
 
     if data:
+        message = ''
         for event in data:
             event_name = event['name']
             event_description = event['description']
             event_id = event['id']
+            message = message + 'Name: ' + event_name +  '\nDescription: ' + event_description + '\nLink: ' + 'https://www.facebook.com/events/' + event_id
+            message = message + "\n--------------------"
+        
+        context['event'] = message       
     else:
         context['event'] = 'Sorry there are no upcoming events!'
     
