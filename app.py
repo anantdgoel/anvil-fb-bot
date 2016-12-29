@@ -10,7 +10,6 @@ app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
 sender_id = None
-name = ''
 
 @app.route('/', methods=['GET'])
 def verify():
