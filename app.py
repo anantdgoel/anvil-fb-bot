@@ -162,6 +162,7 @@ def get_email(request):
     entities = request['entities']
     email = first_entity_value(entities, 'email')
     print email
+    return request['context']
 
 def send(request, response):
     send_message(request['session_id'], response['text'])
