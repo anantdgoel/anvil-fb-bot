@@ -10,6 +10,7 @@ app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
 sender_id = None
+name = ''
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -158,6 +159,11 @@ def get_user_info():
     last_name = result['last_name']
     return first_name + ' ' + last_name
 
+def get_email(request):
+    entities = request['entities']
+    email = first_entity_value(entities, 'email')
+    print email
+
 def send(request, response):
     send_message(request['session_id'], response['text'])
 
@@ -166,6 +172,7 @@ actions = {
 'send' : send,
  'add_appointment' : add_appointment,
  'show_events' : get_events,
+ 'get_email' : get_email,
 }
 
 client = Wit(access_token=access_token, actions=actions)
