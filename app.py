@@ -9,6 +9,7 @@ from wit import Wit
 app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
+sender_id = None
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -36,7 +37,7 @@ def webhook():
             for messaging_event in entry["messaging"]:
 
                 if messaging_event.get("message"):  # someone sent us a message
-
+                    global sender_id
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
@@ -112,7 +113,7 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        context['date'] = str(parse_datetime(datetime))
+        context['date'] = str(parse_datetime(datetime)) + ' ' + str(get_user_info())
         if context.get('missing_date') is not None:
             del context['missing_date']
     else:
@@ -126,8 +127,42 @@ def parse_datetime(datetime):
     date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) 
     return date
 
-def get_events():
-    print "Testing get_events()"
+def get_events(request):
+    context = request['context']
+    page_access_token = os.environ['PAGE_ACCESS_TOKEN']
+
+    result = requests.get('https://graph.facebook.com/v2.8/dummyanvilpage/events?access_token=' + page_access_token).json()
+
+    data = result['data']
+
+    if data:
+        message = ''
+        for event in data:
+            event_name = event['name']
+            event_description = event['description']
+            event_id = event['id']
+            message = message + 'Name: ' + event_name +  '\nDescription:\n' + event_description + '\nLink: ' + 'https://www.facebook.com/events/' + event_id
+            message = message + "\n\n"
+        
+        message = message[:len(message) - 2]
+        context['event'] = message       
+    else:
+        context['event'] = 'Sorry there are no upcoming events!'
+    
+    return context
+
+def get_user_info():
+    page_access_token = os.environ['PAGE_ACCESS_TOKEN']
+    result = requests.get('https://graph.facebook.com/v2.8/' + sender_id + '?fields=first_name,last_name&access_token=' + page_access_token).json()
+    first_name = result['first_name']
+    last_name = result['last_name']
+    return first_name + ' ' + last_name
+
+def get_email(request):
+    entities = request['entities']
+    email = first_entity_value(entities, 'email')
+    print email
+    return request['context']
 
 def send(request, response):
     send_message(request['session_id'], response['text'])
@@ -137,6 +172,7 @@ actions = {
 'send' : send,
  'add_appointment' : add_appointment,
  'show_events' : get_events,
+ 'get_email' : get_email,
 }
 
 client = Wit(access_token=access_token, actions=actions)
