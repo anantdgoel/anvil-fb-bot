@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
+from flask.ext.sqlalchemy import SQLAlchemy
 import sqlalchemy
 from sqlalchemy import Table, Column, Integer, String
 
