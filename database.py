@@ -6,7 +6,7 @@ appointments = None
 
 def initialize_database():
     global engine
-    engine = sqlalchemy.create_engine('postgresql://localhost/anvilappointments’)
+    engine = sqlalchemy.create_engine('postgresql://localhost/anvilappointments')
 
     meta = sqlalchemy.MetaData(bind=engine, reflect=True)
 
