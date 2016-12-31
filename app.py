@@ -6,6 +6,7 @@ import requests
 from flask import Flask, request
 from wit import Wit
 import database
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
