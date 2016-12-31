@@ -5,11 +5,16 @@ import uuid, OpenSSL
 import requests
 from flask import Flask, request
 from wit import Wit
+import database
 
 app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
 sender_id = None
+database.initialize_database()
+email = None
+name = None
+date = None
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -124,6 +129,7 @@ def add_appointment(request):
 
 def parse_datetime(datetime):
     date_array = datetime[0:datetime.index('T')].split('-')
+    global date
     date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) 
     return date
 
@@ -156,23 +162,29 @@ def get_user_info():
     result = requests.get('https://graph.facebook.com/v2.8/' + sender_id + '?fields=first_name,last_name&access_token=' + page_access_token).json()
     first_name = result['first_name']
     last_name = result['last_name']
-    return first_name + ' ' + last_name
+    global name
+    name = first_name + ' ' + last_name
+    return name
 
 def get_email(request):
     entities = request['entities']
+    global email
     email = first_entity_value(entities, 'email')
-    print email
     return request['context']
 
 def send(request, response):
     send_message(request['session_id'], response['text'])
 
+def update_db():
+    database.insert(name, email, date)
+    database.print_table()
 
 actions = {
 'send' : send,
  'add_appointment' : add_appointment,
  'show_events' : get_events,
  'get_email' : get_email,
+ ‘update_db’ : update_db,
 }
 
 client = Wit(access_token=access_token, actions=actions)
