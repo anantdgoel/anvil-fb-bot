@@ -161,7 +161,6 @@ def get_user_info():
 def get_email(request):
     entities = request['entities']
     email = first_entity_value(entities, 'email')
-    print email
     return request['context']
 
 def send(request, response):
