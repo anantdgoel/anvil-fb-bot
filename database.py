@@ -1,3 +1,4 @@
+from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy
 from sqlalchemy import Table, Column, Integer, String
 
