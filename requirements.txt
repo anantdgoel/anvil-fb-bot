@@ -9,3 +9,4 @@ requests==2.10.0
 wsgiref==0.1.2
 wit==4.2.0
 pyOpenSSL==16.2.0
+Flask-SQLAlchemy==2.1
