@@ -5,17 +5,17 @@ import uuid, OpenSSL
 import requests
 from flask import Flask, request
 from wit import Wit
-import database
-from flask_sqlalchemy import SQLAlchemy
+#import database
+from db import db, AnvilAppointment
 
-app = Flask(__name__)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
 sender_id = None
-database.initialize_database()
+#database.initialize_database()
 email = None
 name = None
 date = None
+db.create_all()
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -173,12 +173,18 @@ def get_email(request):
     email = first_entity_value(entities, 'email')
     return request['context']
 
+def update_db():
+    appointee = AnvilAppointment(name, email, date)
+    db.session.add(appointee)
+    db.session.commit()
+    print AnvilAppointment.query.all()
+
 def send(request, response):
     send_message(request['session_id'], response['text'])
 
-def update_db():
-    database.insert(name, email, date)
-    database.print_table()
+#def update_db():
+#    database.insert(name, email, date)
+#    database.print_table()
 
 actions = {
 'send' : send,
