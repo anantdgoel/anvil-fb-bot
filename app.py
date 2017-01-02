@@ -6,12 +6,12 @@ import requests
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from wit import Wit
-from model import AnvilAppointment
  
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+from model import AnvilAppointment #solves circular import problem
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
 sender_id = None
