@@ -6,7 +6,7 @@ import requests
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from wit import Wit
-from db import AnvilAppointment
+from model import AnvilAppointment
  
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
