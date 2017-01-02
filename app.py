@@ -6,7 +6,7 @@ import requests
 from flask import Flask, request
 from wit import Wit
 #import database
-from db import db, AnvilAppointment
+#from db import db, AnvilAppointment
 
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
@@ -15,7 +15,7 @@ sender_id = None
 email = None
 name = None
 date = None
-db.create_all()
+#db.create_all()
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -173,11 +173,12 @@ def get_email(request):
     email = first_entity_value(entities, 'email')
     return request['context']
 
-def update_db():
-    appointee = AnvilAppointment(name, email, date)
-    db.session.add(appointee)
-    db.session.commit()
-    print AnvilAppointment.query.all()
+#def update_db():
+#    appointee = AnvilAppointment(name, email, date)
+#    db.session.add(appointee)
+#    db.session.commit()
+#    print AnvilAppointment.query.all()
+    print "test"
 
 def send(request, response):
     send_message(request['session_id'], response['text'])
