@@ -9,7 +9,8 @@ from app import db
 
 class AnvilAppointment(db.Model):
     __tablename__= 'appointments'
-
+    
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     email = db.Column(db.String)
     appointment_date = db.Column(db.String)
