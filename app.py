@@ -166,7 +166,7 @@ def get_email(request):
 def send(request, response):
     send_message(request['session_id'], response['text'])
  
-def update_db:
+def update_db():
     print "update db test"
  
 actions = {
