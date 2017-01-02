@@ -7,7 +7,7 @@ appointments = None
 def initialize_database():
     global engine
     url = 'postgresql://{}:{}@{}:{}/{}'
-    url = url.format('anvil', 'anvil', 'localhost', 5432, anvilappointments)
+    url = url.format('anvil', 'anvil', 'localhost', 5432, 'anvilappointments')
     engine = sqlalchemy.create_engine(url)
 
     meta = sqlalchemy.MetaData(bind=engine, reflect=True)
