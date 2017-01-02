@@ -6,7 +6,9 @@ appointments = None
 
 def initialize_database():
     global engine
-    engine = sqlalchemy.create_engine('postgresql://localhost/anvilappointments')
+    url = 'postgresql://{}:{}@{}:{}/{}'
+    url = url.format('anvil', 'anvil', 'localhost', 5432, anvilappointments)
+    engine = sqlalchemy.create_engine(url)
 
     meta = sqlalchemy.MetaData(bind=engine, reflect=True)
 
@@ -32,3 +34,5 @@ def print_table():
     for row in engine.execute(results.select()):
         print row
 
+if __name__ == '__main__':
+    initialize_database()
