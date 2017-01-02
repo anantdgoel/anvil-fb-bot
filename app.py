@@ -4,9 +4,13 @@ import json
 import uuid, OpenSSL
 import requests
 from flask import Flask, request
+from flask_sqlalchemy import SQLAlchemy
 from wit import Wit
  
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
 sender_id = None
