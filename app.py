@@ -6,6 +6,7 @@ import requests
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from wit import Wit
+from db import AnvilAppointment
  
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -171,7 +172,10 @@ def send(request, response):
     send_message(request['session_id'], response['text'])
  
 def update_db():
-    print "update db test"
+    appointee = AnvilAppointment(name, email, date)
+    db.session.add(appointee)
+    db.session.commit()
+    print AnvilAppointment.query.all()
  
 actions = {
  'send' : send,
