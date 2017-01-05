@@ -187,6 +187,9 @@ def update_db():
    # print "update_db() vals:\nname: " + str(name) + "\nemail: " + str(email) + "\ndate: " + str(date)
     global appointee
     appointee = AnvilAppointment(name, email, date)
+    name = None
+    email = None
+    date = None
     db.session.add(appointee)
     db.session.commit()
 
