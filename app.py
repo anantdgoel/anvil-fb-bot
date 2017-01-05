@@ -19,6 +19,7 @@ name = None
 date = None
 email = None
 sender_id = None
+appointee = None
  
 @app.route('/', methods=['GET'])
 def verify():
@@ -184,15 +185,22 @@ def send(request, response):
  
 def update_db():
    # print "update_db() vals:\nname: " + str(name) + "\nemail: " + str(email) + "\ndate: " + str(date)
+    global appointee
     appointee = AnvilAppointment(name, email, date)
     db.session.add(appointee)
     db.session.commit()
- 
+
+def delete_apt(request):
+    db.session.delete(appointee)
+    db.session.commit()
+    return request['context'] 
+
 actions = {
  'send' : send,
   'add_appointment' : add_appointment,
   'show_events' : get_events,
   'get_email' : get_email,
+  'delete_apt' : delete_apt,
  }
  
 client = Wit(access_token=access_token, actions=actions)
