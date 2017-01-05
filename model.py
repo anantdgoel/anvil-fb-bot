@@ -7,9 +7,7 @@ from app import db
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #db = SQLAlchemy(app)
 
-class AnvilAppointment(db.Model):
-    __tablename__= 'appointments'
-    
+class AnvilAppointment(db.Model):    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     email = db.Column(db.String)
