@@ -19,7 +19,7 @@ name = None
 date = None
 email = None
 sender_id = None
-appointee = None
+appointee = AnvilAppointment()
  
 @app.route('/', methods=['GET'])
 def verify():
@@ -123,10 +123,12 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        global name
+        #global name
         name = str(get_user_info())
-        global date
+        #global date
         date = str(parse_datetime(datetime))
+        appointee.set_name(name)
+        appointee.set_date(date)
         context['date'] = date
         if context.get('missing_date') is not None:
             del context['missing_date']
@@ -175,8 +177,9 @@ def get_user_info():
   
 def get_email(request):
     entities = request['entities']
-    global email
+    #global email
     email = first_entity_value(entities, 'email')
+    appointee.set_email(email)
     update_db()
     return request['context']
   
@@ -185,11 +188,8 @@ def send(request, response):
  
 def update_db():
    # print "update_db() vals:\nname: " + str(name) + "\nemail: " + str(email) + "\ndate: " + str(date)
-    global appointee
-    appointee = AnvilAppointment(name, email, date)
-    name = None
-    email = None
-    date = None
+    #global appointee
+    #appointee = AnvilAppointment(name, email, date)
     db.session.add(appointee)
     db.session.commit()
 
