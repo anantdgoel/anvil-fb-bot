@@ -183,10 +183,10 @@ def send(request, response):
     send_message(request['session_id'], response['text'])
  
 def update_db():
-    print "update_db() vals:\nname: " + str(name) + "\nemail: " + str(email) + "\ndate: " + str(date)
-   # appointee = AnvilAppointment(name, email, date)
-   # db.session.add(appointee)
-   # db.session.commit()
+   # print "update_db() vals:\nname: " + str(name) + "\nemail: " + str(email) + "\ndate: " + str(date)
+    appointee = AnvilAppointment(name, email, date)
+    db.session.add(appointee)
+    db.session.commit()
  
 actions = {
  'send' : send,
