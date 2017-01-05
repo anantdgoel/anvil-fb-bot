@@ -177,8 +177,8 @@ def set_date(d):
     date = d
 
 def set_email(e):
-    email = e
- 
+   email = e
+  
 def get_email(request):
     entities = request['entities']
     email = first_entity_value(entities, 'email')
@@ -190,7 +190,7 @@ def send(request, response):
     send_message(request['session_id'], response['text'])
  
 def update_db():
-    print "update_db() vals:\nname: " + name + "\nemail: " + email + "\ndate: " + date
+    print "update_db() vals:\nname: " + str(name) + "\nemail: " + str(email) + "\ndate: " + str(date)
    # appointee = AnvilAppointment(name, email, date)
    # db.session.add(appointee)
    # db.session.commit()
