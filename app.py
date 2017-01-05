@@ -122,11 +122,7 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        global name
-        name = str(get_user_info())
-        global date
-        date = str(parse_datetime(datetime))
-        context['date'] = date
+        context['date'] = str(parse_datetime(datetime))
         if context.get('missing_date') is not None:
             del context['missing_date']
     else:
@@ -137,6 +133,7 @@ def add_appointment(request):
  
 def parse_datetime(datetime):
     date_array = datetime[0:datetime.index('T')].split('-')
+    global date
     date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) 
     return date
  
@@ -169,6 +166,7 @@ def get_user_info():
     result = requests.get('https://graph.facebook.com/v2.8/' + sender_id + '?fields=first_name,last_name&access_token=' + page_access_token).json()
     first_name = result['first_name']
     last_name = result['last_name']
+    global name
     name = first_name + ' ' + last_name
     return name
  
@@ -183,9 +181,10 @@ def send(request, response):
     send_message(request['session_id'], response['text'])
  
 def update_db():
-    appointee = AnvilAppointment(name, email, date)
-    db.session.add(appointee)
-    db.session.commit()
+    print "update_db() vals:\nname: " + name + "\nemail: " + email + "\ndate: " + date
+   # appointee = AnvilAppointment(name, email, date)
+   # db.session.add(appointee)
+   # db.session.commit()
  
 actions = {
  'send' : send,
