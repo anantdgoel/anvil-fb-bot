@@ -133,8 +133,8 @@ def add_appointment(request):
  
 def parse_datetime(datetime):
     date_array = datetime[0:datetime.index('T')].split('-')
-    global date
-    date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0]) 
+    date = str(date_array[1]) + '/' + str(date_array[2]) + '/' + str(date_array[0])
+    set_date(date) 
     return date
  
 def get_events(request):
@@ -166,14 +166,23 @@ def get_user_info():
     result = requests.get('https://graph.facebook.com/v2.8/' + sender_id + '?fields=first_name,last_name&access_token=' + page_access_token).json()
     first_name = result['first_name']
     last_name = result['last_name']
-    global name
     name = first_name + ' ' + last_name
+    set_name(name)
     return name
+
+def set_name(n):
+    name = n
+
+def set_date(d):
+    date = d
+
+def set_email(e):
+    email = e
  
 def get_email(request):
     entities = request['entities']
-    global email
     email = first_entity_value(entities, 'email')
+    set_email(email)
     update_db()
     return request['context']
   
