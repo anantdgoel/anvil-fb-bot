@@ -7,6 +7,7 @@ class AnvilAppointment(db.Model):
     appointment_date = db.Column(db.String)
 
     def __init__(self):
+        print "created"
         #self.name = name
         #self.email = email
         #self.appointment_date = appointment_date
