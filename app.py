@@ -171,11 +171,12 @@ def get_email(request):
 def send(request, response):
     send_message(request['session_id'], response['text'])
  
-def update_db():
+def update_db(request):
     appointee = AnvilAppointment(name, email, date)
     db.session.add(appointee)
     db.session.commit()
     print AnvilAppointment.query.all()
+    return request['context']
  
 actions = {
  'send' : send,
