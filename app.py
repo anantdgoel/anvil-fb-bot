@@ -5,16 +5,23 @@ import uuid, OpenSSL
 import requests
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from wit import Wit
- 
+from wit import Wit 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 from model import AnvilAppointment #solves circular import problem
+
+db.create_all()
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
+name = None
+date = None
+email = None
 sender_id = None
+appointee = None
  
 @app.route('/', methods=['GET'])
 def verify():
@@ -118,7 +125,13 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        context['date'] = str(parse_datetime(datetime)) + ' ' + str(get_user_info())
+        global name
+        name = str(get_user_info())
+        global date
+        date = str(parse_datetime(datetime))
+        user_name = name
+        appointment_date = date
+        context['date'] = date
         if context.get('missing_date') is not None:
             del context['missing_date']
     else:
@@ -161,28 +174,37 @@ def get_user_info():
     result = requests.get('https://graph.facebook.com/v2.8/' + sender_id + '?fields=first_name,last_name&access_token=' + page_access_token).json()
     first_name = result['first_name']
     last_name = result['last_name']
-    return first_name + ' ' + last_name
- 
+    name = first_name + ' ' + last_name
+    return name
+  
 def get_email(request):
     entities = request['entities']
+    global email
     email = first_entity_value(entities, 'email')
+    update_db(request)
     return request['context']
   
 def send(request, response):
     send_message(request['session_id'], response['text'])
  
-def update_db():
+def update_db(request):
+   # print "update_db() vals:\nname: " + str(user_name) + "\nemail: " + str(email) + "\ndate: " + str(appointment_date)
+    global appointee
     appointee = AnvilAppointment(name, email, date)
     db.session.add(appointee)
     db.session.commit()
-    print AnvilAppointment.query.all()
- 
+
+def delete_apt(request):
+    db.session.delete(appointee)
+    db.session.commit()
+    return request['context'] 
+
 actions = {
  'send' : send,
   'add_appointment' : add_appointment,
   'show_events' : get_events,
   'get_email' : get_email,
-  'update_db' : update_db,
+  'delete_apt' : delete_apt,
  }
  
 client = Wit(access_token=access_token, actions=actions)
