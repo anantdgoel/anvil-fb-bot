@@ -17,8 +17,8 @@ from model import AnvilAppointment #solves circular import problem
 db.create_all()
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
-user_name = None
-appointment_date = None
+name = None
+date = None
 email = None
 sender_id = None
 appointee = None
@@ -125,9 +125,9 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-       # global name
+        global name
         name = str(get_user_info())
-       # global date
+        global date
         date = str(parse_datetime(datetime))
         user_name = name
         appointment_date = date
@@ -181,18 +181,20 @@ def get_email(request):
     entities = request['entities']
     global email
     email = first_entity_value(entities, 'email')
-    update_db()
+    update_db(request)
     return request['context']
   
 def send(request, response):
     send_message(request['session_id'], response['text'])
  
-def update_db():
-    print "update_db() vals:\nname: " + str(user_name) + "\nemail: " + str(email) + "\ndate: " + str(appointment_date)
-    #global appointee
-    #appointee = AnvilAppointment(user_name, email, appointment_date)
-    #db.session.add(appointee)
-    #db.session.commit()
+def update_db(request):
+   # print "update_db() vals:\nname: " + str(user_name) + "\nemail: " + str(email) + "\ndate: " + str(appointment_date)
+    name = get_user_info()
+    date = request['context']['date']
+    global appointee
+    appointee = AnvilAppointment(name, email, date)
+    db.session.add(appointee)
+    db.session.commit()
 
 def delete_apt(request):
     db.session.delete(appointee)
