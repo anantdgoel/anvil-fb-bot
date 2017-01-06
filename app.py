@@ -189,8 +189,6 @@ def send(request, response):
  
 def update_db(request):
    # print "update_db() vals:\nname: " + str(user_name) + "\nemail: " + str(email) + "\ndate: " + str(appointment_date)
-    name = get_user_info()
-    date = request['context']['date']
     global appointee
     appointee = AnvilAppointment(name, email, date)
     db.session.add(appointee)
