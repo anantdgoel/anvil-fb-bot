@@ -188,11 +188,11 @@ def send(request, response):
     send_message(request['session_id'], response['text'])
  
 def update_db():
-   # print "update_db() vals:\nname: " + str(name) + "\nemail: " + str(email) + "\ndate: " + str(date)
-    global appointee
-    appointee = AnvilAppointment(user_name, email, appointment_date)
-    db.session.add(appointee)
-    db.session.commit()
+    print "update_db() vals:\nname: " + str(user_name) + "\nemail: " + str(email) + "\ndate: " + str(appointment_date)
+    #global appointee
+    #appointee = AnvilAppointment(user_name, email, appointment_date)
+    #db.session.add(appointee)
+    #db.session.commit()
 
 def delete_apt(request):
     db.session.delete(appointee)
