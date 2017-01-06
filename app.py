@@ -17,8 +17,8 @@ from model import AnvilAppointment #solves circular import problem
 db.create_all()
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
-name = None
-date = None
+user_name = None
+appointment_date = None
 email = None
 sender_id = None
 appointee = None
@@ -125,10 +125,12 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        global name
+       # global name
         name = str(get_user_info())
-        global date
+       # global date
         date = str(parse_datetime(datetime))
+        user_name = name
+        appointment_date = date
         context['date'] = date
         if context.get('missing_date') is not None:
             del context['missing_date']
@@ -188,7 +190,7 @@ def send(request, response):
 def update_db():
    # print "update_db() vals:\nname: " + str(name) + "\nemail: " + str(email) + "\ndate: " + str(date)
     global appointee
-    appointee = AnvilAppointment(name, email, date)
+    appointee = AnvilAppointment(user_name, email, appointment_date)
     db.session.add(appointee)
     db.session.commit()
 
