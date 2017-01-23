@@ -202,7 +202,7 @@ def delete_apt(request):
     //else:
      db.session.delete(appointee)
     db.session.commit()
-      // context['success'] = 'Your appointment was canceled!'
+    //context['success'] = 'Your appointment was canceled!'
     return request['context'] 
 
 actions = {
