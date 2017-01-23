@@ -198,9 +198,9 @@ def delete_apt(request):
     //context = request['context']
     //user = AnvilAppointment.query.filter_by(name=name).first()
     //if user is None:
-    //    context['success'] = 'Your appointment was unable to be canceled'
+    //context['success'] = 'Your appointment was unable to be canceled'
     //else:
-     db.session.delete(appointee)
+    db.session.delete(appointee)
     db.session.commit()
     //context['success'] = 'Your appointment was canceled!'
     return request['context'] 
