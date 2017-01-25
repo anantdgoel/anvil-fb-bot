@@ -76,7 +76,7 @@ def send_message(recipient_id, message_text, quick_replies):
      "content_type":"text",
       "title": x,
       "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
-      } , items))
+      } , quick_replies))
 
 
     params = {
