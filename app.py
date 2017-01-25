@@ -194,7 +194,7 @@ def update_db(request):
     db.session.add(appointee)
     db.session.commit()
 
-def delete_apt(request):
+def delete_apt(request): 
     db.session.delete(appointee)
     db.session.commit()
     return request['context'] 
