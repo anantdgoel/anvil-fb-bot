@@ -84,8 +84,8 @@ def send_message(recipient_id, message_text):
             "id": recipient_id
         },
         "message": {
-            "text": message_text,
-            "quick_replies":[
+            "text": message_text
+         """   "quick_replies":[
                                 {
                                  "content_type":"text",
                                   "title":"Yes",
@@ -96,7 +96,7 @@ def send_message(recipient_id, message_text):
                                    "title":"No",
                                    "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
                                     }
-                            ]
+                            ] """
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
