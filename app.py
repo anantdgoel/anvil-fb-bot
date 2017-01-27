@@ -17,7 +17,7 @@ from model import AnvilAppointment #solves circular import problem
 db.create_all()
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
-name = None
+# name = None
 date = None
 email = None
 sender_id = None
@@ -85,18 +85,18 @@ def send_message(recipient_id, message_text):
         },
         "message": {
             "text": message_text
-        #    "quick_replies":[
-        #                        {
-        #                         "content_type":"text",
-        #                          "title":"Yes",
-        #                          "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
-        #                          },
-        #                         {
-        #                           "content_type":"text",
-        #                           "title":"No",
-        #                           "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
-        #                            }
-        #                    ]
+           "quick_replies":[
+                               {
+                                "content_type":"text",
+                                 "title":"Test1",
+                                 "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+                                 },
+                                {
+                                  "content_type":"text",
+                                  "title":"Test2",
+                                  "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+                                   }
+                           ]
 
         }
     })
@@ -126,11 +126,10 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        global name
-        name = str(get_user_info())
+        # global name
+        # name = str(get_user_info())
         global date
         date = str(parse_datetime(datetime))
-        user_name = name
         appointment_date = date
         context['date'] = date
         if context.get('missing_date') is not None:
@@ -191,26 +190,28 @@ def send(request, response):
 def update_db(request):
    # print "update_db() vals:\nname: " + str(user_name) + "\nemail: " + str(email) + "\ndate: " + str(appointment_date)
     # global appointee
+    name = str(get_user_info())
     appointee = AnvilAppointment.query.filter_by(name=name).first()
-    if (appointee):
+    if appointee is None:
+        appointee = AnvilAppointment(name, email, date)
+        db.session.add(appointee)
+        db.session.commit()
+    else:
         appointee.name = name
         appointee.email = email
         appointee.appointment_date = date
         db.session.commit()
-    else:
-        appointee = AnvilAppointment(name, email, date)
-        db.session.add(appointee)
-        db.session.commit()
 
 def delete_apt(request):
-    context = request['context'];
+    context = request['context']
+    name = str(get_user_info())
     appointee = AnvilAppointment.query.filter_by(name=name).first()
-    if (appointee):
+    if (appointee is None):
+        context['success'] = "We were not able to delete your appointment."
+    else:
         db.session.delete(appointee)
         db.session.commit()
         context['success'] = "Your appointment was deleted successfully!"
-    else:
-        context['success'] = "We were not able to delete your appointment."
     return request['context']
 
 actions = {
