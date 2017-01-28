@@ -18,10 +18,11 @@ db.create_all()
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
 # name = None
-date = None
-email = None
+# date = None
+# email = None
 sender_id = None
 # appointee = None
+appointee = AnvilAppointment(name, email, date)
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -84,21 +85,20 @@ def send_message(recipient_id, message_text):
             "id": recipient_id
         },
         "message": {
-            "text": message_text
-           "quick_replies":[
-                               {
-                                "content_type":"text",
-                                 "title":"Test1",
-                                 "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
-                                 },
-                                {
+             "text": message_text,
+             "quick_replies":[
+                                 {
                                   "content_type":"text",
-                                  "title":"Test2",
-                                  "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
-                                   }
-                           ]
-
-        }
+                                   "title":"Yes",
+                                   "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+                                   },
+                                  {
+                                    "content_type":"text",
+                                    "title":"No",
+                                    "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+                                     }
+                             ]
+         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
     if r.status_code != 200:
@@ -127,10 +127,11 @@ def add_appointment(request):
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
         # global name
-        # name = str(get_user_info())
-        global date
+        name = str(get_user_info())
+        # global date
         date = str(parse_datetime(datetime))
-        appointment_date = date
+        appointee.appointment_date = date
+        appointee.name = name
         context['date'] = date
         if context.get('missing_date') is not None:
             del context['missing_date']
@@ -179,8 +180,9 @@ def get_user_info():
 
 def get_email(request):
     entities = request['entities']
-    global email
+    # global email
     email = first_entity_value(entities, 'email')
+    appointee.email = email
     update_db(request)
     return request['context']
 
@@ -190,17 +192,21 @@ def send(request, response):
 def update_db(request):
    # print "update_db() vals:\nname: " + str(user_name) + "\nemail: " + str(email) + "\ndate: " + str(appointment_date)
     # global appointee
-    name = str(get_user_info())
-    appointee = AnvilAppointment.query.filter_by(name=name).first()
-    if appointee is None:
-        appointee = AnvilAppointment(name, email, date)
-        db.session.add(appointee)
-        db.session.commit()
-    else:
-        appointee.name = name
-        appointee.email = email
-        appointee.appointment_date = date
-        db.session.commit()
+    # name = str(get_user_info())
+    # appointee = AnvilAppointment.query.filter_by(name=name).first()
+    # if appointee is None:
+    #     appointee = AnvilAppointment(name, email, date)
+    #     db.session.add(appointee)
+    #     db.session.commit()
+    # else:
+    #     appointee.name = name
+    #     appointee.email = email
+    #     appointee.appointment_date = date
+    #     db.session.commit()
+    appointee = AnvilAppointment(name, email, date)
+    db.session.add(appointee)
+    db.session.commit()
+
 
 def delete_apt(request):
     context = request['context']
