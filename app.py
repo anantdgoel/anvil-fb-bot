@@ -17,9 +17,9 @@ from model import AnvilAppointment #solves circular import problem
 db.create_all()
 access_token = os.environ['WIT_ACCESS_TOKEN']
 contexts = {}
-# name = None
-# date = None
-# email = None
+name = None
+date = None
+email = None
 sender_id = None
 # appointee = None
 appointee = AnvilAppointment(name, email, date)
@@ -86,18 +86,18 @@ def send_message(recipient_id, message_text):
         },
         "message": {
              "text": message_text,
-             "quick_replies":[
-                                 {
-                                  "content_type":"text",
-                                   "title":"Yes",
-                                   "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
-                                   },
-                                  {
-                                    "content_type":"text",
-                                    "title":"No",
-                                    "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
-                                     }
-                             ]
+            #  "quick_replies":[
+            #                      {
+            #                       "content_type":"text",
+            #                        "title":"Yes",
+            #                        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+            #                        },
+            #                       {
+            #                         "content_type":"text",
+            #                         "title":"No",
+            #                         "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+            #                          }
+            #                  ]
          }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
@@ -203,7 +203,6 @@ def update_db(request):
     #     appointee.email = email
     #     appointee.appointment_date = date
     #     db.session.commit()
-    appointee = AnvilAppointment(name, email, date)
     db.session.add(appointee)
     db.session.commit()
 
