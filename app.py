@@ -86,18 +86,18 @@ def send_message(recipient_id, message_text):
         },
         "message": {
              "text": message_text,
-            #  "quick_replies":[
-            #                      {
-            #                       "content_type":"text",
-            #                        "title":"Yes",
-            #                        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
-            #                        },
-            #                       {
-            #                         "content_type":"text",
-            #                         "title":"No",
-            #                         "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
-            #                          }
-            #                  ]
+             "quick_replies":[
+                                 {
+                                  "content_type":"text",
+                                   "title":"Yes",
+                                   "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+                                   },
+                                  {
+                                    "content_type":"text",
+                                    "title":"No",
+                                    "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+                                     }
+                             ]
          }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
@@ -219,12 +219,26 @@ def delete_apt(request):
         context['success'] = "Your appointment was deleted successfully!"
     return request['context']
 
+def show_apt(request):
+    context = request['context']
+    name = str(get_user_info())
+    appointee = AnvilAppointment.query.filter_by(name=name).first()
+    if (appointee is None):
+        context['apt_date'] = "You do not currently have an appointment"
+    else:
+        date = appointee.appointment_date
+        context['apt_date'] = "Your current appointment is on " + date
+
+    return context
+
+
 actions = {
  'send' : send,
   'add_appointment' : add_appointment,
   'show_events' : get_events,
   'get_email' : get_email,
   'delete_apt' : delete_apt,
+  'show_apt' : show_apt,
  }
 
 client = Wit(access_token=access_token, actions=actions)
