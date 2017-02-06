@@ -21,7 +21,8 @@ name = None
 date = None
 email = None
 sender_id = None
-appointee = None
+# appointee = None
+appointee = AnvilAppointment(name, email, date)
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -55,7 +56,8 @@ def webhook():
                     message_text = messaging_event["message"]["text"]  # the message's text
 
                     curr_context = {}
-                    client.converse(sender_id, message_text, curr_context)
+
+                    client.run_actions(sender_id, message_text, curr_context, 25)
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -69,7 +71,7 @@ def webhook():
     return "ok", 200
 
 
-def send_message(recipient_id, message_text, quick_replies):
+def send_message(recipient_id, message_text):
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
     qr = list(map(lambda x: {
@@ -90,9 +92,20 @@ def send_message(recipient_id, message_text, quick_replies):
             "id": recipient_id
         },
         "message": {
-            "text": message_text,
-            "quick_replies":qr
-        }
+             "text": message_text,
+            #  "quick_replies":[
+            #                      {
+            #                       "content_type":"text",
+            #                        "title":"Yes",
+            #                        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+            #                        },
+            #                       {
+            #                         "content_type":"text",
+            #                         "title":"No",
+            #                         "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+            #                          }
+            #                  ]
+         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
     if r.status_code != 200:
@@ -120,12 +133,12 @@ def add_appointment(request):
     entities = request['entities']
     datetime = first_entity_value(entities, 'datetime')
     if datetime:
-        global name
+        # global name
         name = str(get_user_info())
-        global date
+        # global date
         date = str(parse_datetime(datetime))
-        user_name = name
-        appointment_date = date
+        appointee.appointment_date = date
+        appointee.name = name
         context['date'] = date
         if context.get('missing_date') is not None:
             del context['missing_date']
@@ -174,25 +187,56 @@ def get_user_info():
 
 def get_email(request):
     entities = request['entities']
-    global email
+    # global email
     email = first_entity_value(entities, 'email')
+    appointee.email = email
     update_db(request)
     return request['context']
 
 def send(request, response):
-    send_message(request['session_id'], response['text'], response['quickreplies'])
+    send_message(request['session_id'], response['text'])
 
 def update_db(request):
    # print "update_db() vals:\nname: " + str(user_name) + "\nemail: " + str(email) + "\ndate: " + str(appointment_date)
-    global appointee
-    appointee = AnvilAppointment(name, email, date)
+    # global appointee
+    # name = str(get_user_info())
+    # appointee = AnvilAppointment.query.filter_by(name=name).first()
+    # if appointee is None:
+    #     appointee = AnvilAppointment(name, email, date)
+    #     db.session.add(appointee)
+    #     db.session.commit()
+    # else:
+    #     appointee.name = name
+    #     appointee.email = email
+    #     appointee.appointment_date = date
+    #     db.session.commit()
     db.session.add(appointee)
     db.session.commit()
 
+
 def delete_apt(request):
-    db.session.delete(appointee)
-    db.session.commit()
+    context = request['context']
+    name = str(get_user_info())
+    appointee = AnvilAppointment.query.filter_by(name=name).first()
+    if (appointee is None):
+        context['success'] = "We were not able to delete your appointment."
+    else:
+        db.session.delete(appointee)
+        db.session.commit()
+        context['success'] = "Your appointment was deleted successfully!"
     return request['context']
+
+def show_apt(request):
+    context = request['context']
+    name = str(get_user_info())
+    appointee = AnvilAppointment.query.filter_by(name=name).first()
+    if (appointee is None):
+        context['apt_date'] = "You do not currently have an appointment"
+    else:
+        date = appointee.appointment_date
+        context['apt_date'] = "Your current appointment is on " + date
+
+    return context
 
 actions = {
  'send' : send,
@@ -200,6 +244,7 @@ actions = {
   'show_events' : get_events,
   'get_email' : get_email,
   'delete_apt' : delete_apt,
+  'show_apt' : show_apt,
  }
 
 client = Wit(access_token=access_token, actions=actions)
